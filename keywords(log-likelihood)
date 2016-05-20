@@ -1,0 +1,38 @@
+# x and y are corpus objects; function will output table of x's keywords compared to y
+llkey<-function(x, y){
+   key<-list()
+   for (i in 1:length(unique(x))) {
+# a = frequency of a given word in corpus x
+a=length(which(x==unique(x)[[i]]))
+# c = total number of words in corpus x minus frequency of given word
+c=length(x)-length(which(x==unique(x)[[i]]))
+# b = frequency of a given word in corpus y
+b=length(which(y==unique(x)[[i]]))
+# d = total number of words in a corpus y minus frequency of given word
+d=length(y)-length(which(y==unique(x)[[i]]))
+N=a+b+c+d
+# if there are no tokens of a given word in corpus y (to avoid log0)
+if (b==0) {
+key[[i]]<-2*(a*log(a) + c*log(c) + d*log(d) + N*log(N) - (a+b)*log(a+b) - (a+c)*log(a+c) - (b+d)*log(b+d) - (c+d)*log(c+d))
+}
+# if given word has a higher relative frequency in corpus y than in corpus x
+else { if (isTRUE(b/length(y) > a/length(x))==TRUE) {
+key[[i]]<-as.numeric(paste("-",2*(a*log(a) + b*log(b) + c*log(c) + d*log(d) + N*log(N) - (a+b)*log(a+b) - (a+c)*log(a+c) - (b+d)*log(b+d) - (c+d)*log(c+d)),sep=""))
+}
+else { key[[i]]<-2*(a*log(a) + b*log(b) + c*log(c) + d*log(d) + N*log(N) - (a+b)*log(a+b) - (a+c)*log(a+c) - (b+d)*log(b+d) - (c+d)*log(c+d))
+}
+}}
+unlist(key)->e
+df<- data.frame(unique(x), e)
+order(df[,2], decreasing=TRUE)->f
+df[f,]->g
+write.table(g, choose.files())
+}
+
+
+
+
+
+
+
+
