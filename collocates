@@ -1,0 +1,12 @@
+# x = node word (in " "); y = corpus object; z = search span on either side of node word (e.g. z = 5 will find collocates 5 words to the left and right of node word)
+coll<-function(x,y,z){
+span <- (-z:z)[(-z:z)!=0]
+matches<- grep(paste0("^[[:punct:]]*",x,"s*[[:punct:]]*$"),y)
+results <- list()
+for (i in 1:length(span)){
+coll.positions <- matches+span[i]
+collocates<- y[coll.positions]
+results[[i]] <- collocates
+}
+write.table(sort(table(unlist(results)), decreasing=T), file=choose.files())
+}
