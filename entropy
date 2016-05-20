@@ -1,0 +1,41 @@
+# outputs a frequency-sorted table of mean relative entropy of each unique word in a corpus, based on predictability of collocates at pre-determined positions in relation to node word
+# x = corpus object; y, z, a = positions around node to be observed (user can modify code to add or remove new positions)
+entropy<-function(x,y,z,a){ 
+all<- list()
+all2<-list()
+all3<- list()
+means<- list()
+for (i in 1:length(unique(x))){
+
+which(x==unique(x)[[i]])->matches # returns number vector of node positions
+matches+y->col.location #finds number vector of words one slot before node
+x[col.location[col.location>-1]]->collocates #returnes unordered vector of N-2 collocates
+table(collocates)->coltab #counts frequency of collocate types
+all[[i]]<--sum((coltab/length(matches))*log2((coltab/length(matches))))/log2(length(coltab))
+
+matches+z->col.location2 #finds number vector of words one slot before node
+x[col.location2[col.location2>-1]]->collocates2 #returnes unordered vector of N-2 collocates
+table(collocates2)->coltab2 #counts frequency of collocate types
+all2[[i]]<--sum((coltab2/length(matches))*log2((coltab2/length(matches))))/log2(length(coltab2))
+
+matches+a->col.location3 #finds number vector of words one slot before node
+x[col.location3[col.location3>-1]]->collocates3 #returnes unordered vector of N-2 collocates
+table(collocates3)->coltab3 #counts frequency of collocate types
+all3[[i]]<--sum((coltab3/length(matches))*log2((coltab3/length(matches))))/log2(length(coltab3))
+
+}
+unlist(all)->e
+unlist(all2)->f
+unlist(all3)->g
+
+e[is.na(e)]=0
+f[is.na(f)]=0
+g[is.na(g)]=0
+
+means<-(e+f+g)/3
+
+df<- data.frame(unique(x), means)
+order(df[,2], decreasing=TRUE)->f
+df[f,]->g
+write.table(g, choose.files())
+}
