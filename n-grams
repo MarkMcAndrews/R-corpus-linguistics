@@ -1,0 +1,22 @@
+# x is a corpus object; n is an integer representing length on n-gram (e.g. 3-gram, 4-gram, etc)
+ngram <- function (x, n) {
+
+# produces list of all n-grams in a text (character vector)
+newgram <- function (x, n)
+{
+    N <- length(x)
+    n <- n[(n >= 1L) & (n <= N)]
+    lapply(unlist(lapply(n, function(k) {
+        pos <- seq_len(k)
+        lapply(seq.int(0, N - k), `+`, pos)
+    }), recursive = FALSE), function(e) x[e])
+}
+
+# outputs a frequency-sorted table of n-grams
+newgram(x, n)-> ng  # list of 4-grams
+lapply(ng, paste, collapse=" ")-> ng  # simplifies list by concatenating elements in each list entry
+unlist(ng)->ng  # makes char vector of length length(corpus)-n+1 = all the n-grams in a text  #result can be used in LLKEY function
+sort(table(ng), decreasing=TRUE)-> ng
+write.table(ng, choose.files())
+
+}
