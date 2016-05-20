@@ -28,11 +28,3 @@ order(df[,2], decreasing=TRUE)->f
 df[f,]->g
 write.table(g, choose.files())
 }
-
-
-
-
-
-
-
-
