@@ -1,0 +1,11 @@
+# x = node word (in " "); y = corpus object; z = concordance span on either side of node word
+conc<-function(x,y,z){
+matches<- grep(paste0("^[[:punct:]]*",x,"[[:punct:]]*$"),y) 
+con<- list()
+for (i in 1:length(matches)){
+con[[i]]<- y[(matches[i]-z):(matches[i]+z)]
+}
+lapply(con, paste, collapse=" ")-> entries  
+unlist(entries)->entries
+cat(entries, file=choose.files(), sep="\n")  
+}
